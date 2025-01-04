@@ -22,7 +22,7 @@ void SystemManager::register_system(System system, ComponentMask mask, void *arg
     /* std::cout << "Registering system with mask: " << mask << std::endl; */
 
     for (const std::pair<Entity, ComponentMask> &item : *entities) {
-        if (item.second == mask) 
+        if ((sys_info.component_mask & item.second) == sys_info.component_mask) 
         {
             sys_info.entities.insert(item.first);
             /* std::cout << "Entity " << item.first << " matches the system mask." << std::endl; */
