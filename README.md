@@ -1,5 +1,5 @@
-# SimpleECS-C-lib
-> Simple ECS C++ library still under process
+# SimpleECS-cpp-lib
+> Simple ECS C++ library still under process. To add : error handling
 
 ### Steps to build and run example:
 
@@ -18,7 +18,7 @@ make
 
 3. To run the example program:
 ```bash
-./build/bin/test_program
+make run
 
 ```
 ### Steps to use:
@@ -65,6 +65,15 @@ void mvt2_system(std::vector<Entity> entities, void *args)
 ```
 **4. Then you have to create an instance of ECS in your main loop before anything**
 
+5. You can then create a scene:
+```cpp
+ECS ecs;
+
+Scene menu = ecs.create_scene();
+ecs.select_scene(menu);
+
+```
+
 5. You can create your entities:
 ```cpp
 ECS ecs;
@@ -105,14 +114,16 @@ ecs.call_system(mvt2_system);
 
 ```
 
-10. And finally you can remove a component and remove an entity:
+10. And finally you can remove a component, remove an entity and delete a scene:
 ```cpp
 ecs.remove_component<Transform>(player);
 ecs.remove_component<Rigidbody>(player);
 
 ecs.delete_entity(player); 
 ecs.delete_entity(player2); 
+  
+ecs.delete_scene(menu);
 
 ```
 
-> I have commented some prints but if you wish to vizualize what is happening feel free to uncomment those parts !
+> I have commented out some logs to debug when I work on it, but if you wish to vizualize what is happening feel free to uncomment those parts !

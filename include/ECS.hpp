@@ -14,38 +14,53 @@
 #include "ComponentManager.hpp"
 #include "SystemManager.hpp"
 
+using Scene=int;
+
+struct SceneInfo
+{
+    Scene id;
+    Entity next_entity = 0;
+    ComponentManager component_manager;
+    SystemManager system_manager;
+    std::vector<Entity> recycled_entities;
+
+    std::unordered_map<Entity, ComponentMask> entity_to_mask;
+};
+
 class ECS
 {
     public:
-        ECS();
-        virtual ~ECS();
+        ~ECS();
 
         Entity create_entity();
         void delete_entity(Entity entity);
         ComponentMask get_entity_mask(Entity entity);
+        Scene create_scene();
+        void delete_scene(Scene scene);
+        void select_scene(Scene scene);
 
         template<typename T>
             void register_component()
             {
-                system_manager.component_manager->register_component<T>(); 
+                current_scene->component_manager.register_component<T>(); 
             }
 
         template<typename T>
             void unregister_component()
             {
 
-                system_manager.component_manager->unregister_component<T>(); 
+                current_scene->component_manager.unregister_component<T>(); 
             }
 
         template<typename T>
             void add_component(Entity entity, T default_value = {})
             {    
-                if (system_manager.component_manager->add_component<T>(entity, default_value) == -1)
+                if (current_scene->component_manager.add_component<T>(entity, default_value) == -1)
                 {
                     return;
                 }
                 ComponentMask updated_mask = get_entity_mask(entity);
-                int component_ind = system_manager.component_manager->type_to_index_map.find(typeid(T))->second;
+                int component_ind = current_scene->component_manager.type_to_index_map.find(typeid(T))->second;
                 updated_mask.set(component_ind);
                 update_entity_mask(entity, updated_mask);
             }
@@ -53,12 +68,12 @@ class ECS
         template<typename T>
             void remove_component(Entity entity)
             {
-                if (system_manager.component_manager->remove_component<T>(entity) == -1)
+                if (current_scene->component_manager.remove_component<T>(entity) == -1)
                 {
                     return;
                 }
                 ComponentMask updated_mask = get_entity_mask(entity);
-                int component_ind = system_manager.component_manager->type_to_index_map.find(typeid(T))->second;
+                int component_ind = current_scene->component_manager.type_to_index_map.find(typeid(T))->second;
 
                 updated_mask.reset(component_ind);
                 update_entity_mask(entity, updated_mask);
@@ -67,29 +82,25 @@ class ECS
         template<typename T>
             T *get_component(Entity entity)
             {
-                return system_manager.component_manager->get_component<T>(entity);
+                return current_scene->component_manager.get_component<T>(entity);
             }
 
 
         template<typename... Components>
             ComponentMask create_signature()
             {
-                return system_manager.create_signature<Components...>();
+                return current_scene->system_manager.create_signature<Components...>();
             }       
 
         void register_system(System system, ComponentMask mask, void *args);
         void call_system(System system);
+        
 
-        std::queue<Entity> entities;
-        std::unordered_map<Entity, ComponentMask> entity_to_mask;
-
-
-    private:
-        Entity next_entity = 0;
-        std::vector<Entity> recycled_entities;
-
-        ComponentManager component_manager;
-        SystemManager system_manager;
+        private:
+        Scene next_scene = 0;
+        std::vector<Scene> recycled_scenes;
+        std::unordered_map<Scene, SceneInfo> scenes;
+        SceneInfo* current_scene;
 
         void update_entity_mask(Entity entity, ComponentMask mask);
 };

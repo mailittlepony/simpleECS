@@ -26,7 +26,7 @@ struct SystemInfo
 class SystemManager
 {
     public:
-        SystemManager(ComponentManager* component_manager);
+        SystemManager();
         virtual ~SystemManager();
 
         template <typename First, typename... Rest>

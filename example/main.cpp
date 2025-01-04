@@ -41,6 +41,9 @@ int main(void)
 {
     ECS ecs;
 
+    Scene menu = ecs.create_scene();
+    ecs.select_scene(menu);
+
     ecs.register_component<Transform>(); 
     ecs.register_component<Rigidbody>(); 
 
@@ -52,6 +55,7 @@ int main(void)
     ecs.add_component<Rigidbody>(player, { .mass = 50.0f }); 
 
     ecs.add_component<Rigidbody>(player2, { .mass = 50.0f }); 
+    std::cout <<"player mask: "<< ecs.get_entity_mask(player)<< std::endl;
 
     Transform *t = ecs.get_component<Transform>(player);
     std::cout << "tx:"<< t->x << std::endl;
@@ -63,11 +67,10 @@ int main(void)
     ecs.register_system(mvt_system, signature, nullptr);
     ecs.register_system(mvt2_system, signature2, nullptr);
 
-    // Print the state before deletion
+    /* // Print the state before deletion */
     /* std::cout << "\nBefore deleting entity:" << std::endl; */
     /* std::cout << "Entity to Mask: " << ecs.get_entity_mask(player) << std::endl; */
     /* std::cout << "Entity to Mask2: " << ecs.get_entity_mask(player2) << std::endl; */
-    /* std::cout << "Systems' entity lists before deletion:" << std::endl; */
 
     ecs.call_system(mvt_system);
     ecs.call_system(mvt2_system);
@@ -75,20 +78,20 @@ int main(void)
     ecs.remove_component<Transform>(player);
     ecs.remove_component<Rigidbody>(player);
 
-    // Print the state after removing components
+    /* // Print the state after removing components */
     /* std::cout << "\nAfter removing components:" << std::endl; */
     /* std::cout << "Entity to Mask: " << ecs.get_entity_mask(player) << std::endl; */
-    /* std::cout << "Systems' entity lists after removal:" << std::endl; */
 
     Rigidbody *r = ecs.get_component<Rigidbody>(player);
 
     ecs.delete_entity(player); 
     ecs.delete_entity(player2); 
 
-    // Verify the entity has been deleted properly
-    /* std::cout << "\nAfter deleting entity:" << std::endl; */
-    /* std::cout << "Entity to Mask: " << ecs.get_entity_mask(player) << std::endl; */
-    /* std::cout << "Systems' entity lists after deletion:" << std::endl; */
+    Scene game = ecs.create_scene();
+    ecs.select_scene(game);
+
+    ecs.delete_scene(menu);
+    ecs.select_scene(menu);
 
     return 0;
 }

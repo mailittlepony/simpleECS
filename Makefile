@@ -42,3 +42,5 @@ $(EXAMPLE_BIN): $(EXAMPLE_OBJ) $(LIBDIR)/$(LIBNAME)
 clean:
 	rm -rf build
 
+run: 
+	./$(EXAMPLE_BIN)
