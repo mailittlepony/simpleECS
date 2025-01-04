@@ -9,7 +9,7 @@ CXXFLAGS = -Iinclude -Isrc -std=c++17
 
 OBJDIR = build/obj
 LIBDIR = build/lib
-LIBNAME = libsimpleecs.a
+LIBNAME = libECSCPP.a
 
 SRC = $(wildcard src/*.cpp)
 OBJ = $(SRC:src/%.cpp=$(OBJDIR)/%.o)
@@ -19,7 +19,7 @@ EXAMPLE_SRC = example/main.cpp
 EXAMPLE_OBJ = $(OBJDIR)/main.o
 EXAMPLE_BIN = build/bin/test_program
 
-LDFLAGS = -L$(LIBDIR) -lsimpleecs
+LDFLAGS = -L$(LIBDIR) -lECSCPP
 
 all: $(LIBDIR)/$(LIBNAME) $(EXAMPLE_BIN)
 
