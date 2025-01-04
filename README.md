@@ -1,4 +1,4 @@
-# SimpleECS-cpp-lib
+# SimpleECS-cpp
 > Simple ECS C++ library still under process. To add : error handling
 
 ### Steps to build and run example:
