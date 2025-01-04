@@ -4,7 +4,7 @@
  * @created     : Friday Jan 03, 2025 13:45:41 CET
  */
 
-#include "SystemManager.hpp"
+#include "../src/SystemManager.hpp"
 
 SystemManager::SystemManager()
 {    

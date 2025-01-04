@@ -11,8 +11,8 @@
 #include <vector>
 #include <queue>
 
-#include "ComponentManager.hpp"
-#include "SystemManager.hpp"
+#include "../src/ComponentManager.hpp"
+#include "../src/SystemManager.hpp"
 
 using Scene=int;
 
@@ -30,30 +30,31 @@ struct SceneInfo
 class ECS
 {
     public:
+        ECS() = delete;
         ~ECS();
 
-        Entity create_entity();
-        void delete_entity(Entity entity);
-        ComponentMask get_entity_mask(Entity entity);
-        Scene create_scene();
-        void delete_scene(Scene scene);
-        void select_scene(Scene scene);
+        static Entity create_entity();
+        static void delete_entity(Entity entity);
+        static ComponentMask get_entity_mask(Entity entity);
+        static Scene create_scene();
+        static void delete_scene(Scene scene);
+        static void select_scene(Scene scene);
 
         template<typename T>
-            void register_component()
+            static void register_component()
             {
                 current_scene->component_manager.register_component<T>(); 
             }
 
         template<typename T>
-            void unregister_component()
+            static void unregister_component()
             {
 
                 current_scene->component_manager.unregister_component<T>(); 
             }
 
         template<typename T>
-            void add_component(Entity entity, T default_value = {})
+            static void add_component(Entity entity, T default_value = {})
             {    
                 if (current_scene->component_manager.add_component<T>(entity, default_value) == -1)
                 {
@@ -66,7 +67,7 @@ class ECS
             }
 
         template<typename T>
-            void remove_component(Entity entity)
+            static void remove_component(Entity entity)
             {
                 if (current_scene->component_manager.remove_component<T>(entity) == -1)
                 {
@@ -80,29 +81,29 @@ class ECS
             }
 
         template<typename T>
-            T *get_component(Entity entity)
+            static T *get_component(Entity entity)
             {
                 return current_scene->component_manager.get_component<T>(entity);
             }
 
 
         template<typename... Components>
-            ComponentMask create_signature()
+            static ComponentMask create_signature()
             {
                 return current_scene->system_manager.create_signature<Components...>();
             }       
 
-        void register_system(System system, ComponentMask mask, void *args);
-        void call_system(System system);
+        static void register_system(System system, ComponentMask mask, void *args);
+        static void call_system(System system);
         
 
         private:
-        Scene next_scene = 0;
-        std::vector<Scene> recycled_scenes;
-        std::unordered_map<Scene, SceneInfo> scenes;
-        SceneInfo* current_scene;
+        static Scene next_scene;
+        static std::vector<Scene> recycled_scenes;
+        static std::unordered_map<Scene, SceneInfo> scenes;
+        static SceneInfo *current_scene;
 
-        void update_entity_mask(Entity entity, ComponentMask mask);
+        static void update_entity_mask(Entity entity, ComponentMask mask);
 };
 
 #endif 

@@ -4,10 +4,14 @@
  * @created     : Wednesday Jan 01, 2025 21:24:47 CET
  */
 
-#include "ComponentManager.hpp"
+#include "../src/ComponentManager.hpp"
 #include "ECS.hpp"
-#include "SystemManager.hpp"
+#include "../src/SystemManager.hpp"
 
+std::vector<Scene> ECS::recycled_scenes = {  };
+Scene ECS::next_scene = 0;
+std::unordered_map<Scene, SceneInfo> ECS::scenes = {  };
+SceneInfo *ECS::current_scene = nullptr;
 
 ECS::~ECS()
 {

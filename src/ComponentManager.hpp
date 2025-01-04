@@ -101,9 +101,9 @@ class ComponentManager
 
                 ComponentInfo<T> *comp_info = (ComponentInfo<T> *)components[type_to_index_map[typeid(T)]];
                 std::cout << "entity_to_index_map for type: " << typeid(T).name() << std::endl;
-                for (auto& entry : comp_info->entity_to_index_map) {
-                    //std::cout << "Entity " << entry.first << " has component at index " << entry.second << std::endl;
-                }
+                /* for (auto& entry : comp_info->entity_to_index_map) { */
+                /*     std::cout << "Entity " << entry.first << " has component at index " << entry.second << std::endl; */
+                /* } */
                 if (comp_info->entity_to_index_map.find(entity) != comp_info->entity_to_index_map.end())
                 {
                     //std::cerr << "Component already exists !" << std::endl;

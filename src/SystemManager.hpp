@@ -7,7 +7,7 @@
 #ifndef SYSTEMMANAGER_HPP
 #define SYSTEMMANAGER_HPP
 
-#include "ComponentManager.hpp"
+#include "../src/ComponentManager.hpp"
 #include <cstdint>
 #include <set>
 #include <unordered_map>
