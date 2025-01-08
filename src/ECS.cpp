@@ -121,11 +121,20 @@ void ECS::delete_scene(Scene scene)
     {
         current_scene = nullptr;
     }
+     
+    SceneInfo &scene_info = scenes[scene];
 
+    // Clear all entities and their associated data
+    for (Entity entity : scene_info.recycled_entities)
+    {
+        delete_entity(entity); // Assuming this clears entity-related resources
+    }
+    scene_info.recycled_entities.clear();
+    scene_info.entity_to_mask.clear();
     recycled_scenes.push_back(scene);
-    scenes[scene] = std::move(scenes[scenes.size() - 1]);
-    scenes.erase(scenes.size() - 1);
-    /* std::cout << "deleted scene ID: " << scene << std::endl; */
+    scenes.erase(scene);
+
+    std::cout << "deleted scene ID: " << scene << std::endl;
 
     /* std::cout << "Recycled scene IDs: "; */
     /* for (const auto &scene : recycled_scenes) { */

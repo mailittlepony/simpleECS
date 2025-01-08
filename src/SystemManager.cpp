@@ -13,7 +13,14 @@ SystemManager::SystemManager()
 }
 
 SystemManager::~SystemManager()
-{
+{   
+    for (SystemInfo &system_info : systems)
+    {
+        delete[] system_info.args; 
+        std::cout << "deleting systems" << std::endl;
+    }
+    systems.clear();
+    system_to_index.clear();
 }
 
 void SystemManager::register_system(System system, ComponentMask mask, int argc, void *args[])

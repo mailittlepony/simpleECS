@@ -42,6 +42,8 @@ class ComponentManager
                 {
                     delete components[i];
                     components[i] = nullptr;
+
+                    std::cout << "deleting components" << std::endl;
                 }
             }
         }
