@@ -5,6 +5,7 @@
  */
 
 #include "../src/SystemManager.hpp"
+#include <cstring>
 
 SystemManager::SystemManager()
 {    
@@ -15,9 +16,11 @@ SystemManager::~SystemManager()
 {
 }
 
-void SystemManager::register_system(System system, ComponentMask mask, void *args)
+void SystemManager::register_system(System system, ComponentMask mask, int argc, void *args[])
 {
-    SystemInfo sys_info = { .system = system, .component_mask = mask, .args = args };
+    SystemInfo sys_info = { .system = system, .component_mask = mask };
+    sys_info.args = new void *[argc];
+    std::memcpy(sys_info.args, args, argc * sizeof(void *));
 
     /* std::cout << "Registering system with mask: " << mask << std::endl; */
 

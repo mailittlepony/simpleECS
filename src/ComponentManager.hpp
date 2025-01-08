@@ -140,7 +140,6 @@ class ComponentManager
                 comp_info->index_to_entity_map.erase(del_ind);
 
                 //std::cout << "Successfully removed component of type " << typeid(T).name() << " for entity " << entity << std::endl;
-
                 return 0;
             }
 

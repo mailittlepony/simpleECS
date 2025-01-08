@@ -21,7 +21,7 @@ struct Rigidbody
     float mass;
 };
 
-void mvt_system(std::vector<Entity> entities, void *args)
+void mvt_system(std::vector<Entity> entities, void *args[])
 {
     for (Entity const &entity : entities)
     {
@@ -29,7 +29,7 @@ void mvt_system(std::vector<Entity> entities, void *args)
     }
 }
 
-void mvt2_system(std::vector<Entity> entities, void *args)
+void mvt2_system(std::vector<Entity> entities, void *args[])
 {
     for (Entity const &entity : entities)
     {
@@ -62,8 +62,8 @@ int main(void)
     ComponentMask signature2 = ECS::create_signature<Rigidbody>();
     std::cout << "Generated Signature: " << signature << std::endl;
 
-    ECS::register_system(mvt_system, signature, nullptr);
-    ECS::register_system(mvt2_system, signature2, nullptr);
+    ECS::register_system(mvt_system, signature);
+    ECS::register_system(mvt2_system, signature2);
 
     /* // Print the state before deletion */
     /* std::cout << "\nBefore deleting entity:" << std::endl; */
@@ -83,13 +83,21 @@ int main(void)
     Rigidbody *r = ECS::get_component<Rigidbody>(player);
 
     ECS::delete_entity(player); 
-    ECS::delete_entity(player2); 
+    ECS::delete_entity(player2);
+
+    ECS::add_component<Transform>(player, { .x=10, .y=20, .z=30 });
+    ECS::add_component<Rigidbody>(player2, { .mass = 50.0f }); 
+
+    Transform *t2 = ECS::get_component<Transform>(player);
+    std::cout << "t2x:"<< t2->x << std::endl;
+
+    ECS::call_system(mvt_system);
+    ECS::call_system(mvt2_system);
 
     Scene game = ECS::create_scene();
     ECS::select_scene(game);
 
     ECS::delete_scene(menu);
-    ECS::select_scene(menu);
 
     return 0;
 }

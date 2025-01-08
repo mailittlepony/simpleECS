@@ -13,12 +13,12 @@
 #include <unordered_map>
 
 typedef std::bitset<MAX_COMPONENTS> ComponentMask;
-using System=void (*)(std::vector<Entity>, void *args);
+using System=void (*)(std::vector<Entity>, void *args[]);
 
 struct SystemInfo
 {
     System system;
-    void *args;
+    void **args;
     ComponentMask component_mask;
     std::set<Entity> entities;
 };
@@ -43,7 +43,7 @@ class SystemManager
                 return mask;
             }
 
-        void register_system(System system, ComponentMask mask, void *args);
+        void register_system(System system, ComponentMask mask, int argc = 0, void *args[] = nullptr);
         void call_system(System system);
 
         std::unordered_map<Entity, ComponentMask> *entities;

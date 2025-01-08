@@ -7,6 +7,7 @@
 #ifndef ECS_HPP
 #define ECS_HPP
 
+#include <iostream>
 #include <unordered_map>
 #include <vector>
 #include <queue>
@@ -55,7 +56,13 @@ class ECS
 
         template<typename T>
             static void add_component(Entity entity, T default_value = {})
-            {    
+            { 
+                if (current_scene->entity_to_mask.find(entity) == current_scene->entity_to_mask.end())
+                {
+                    std::cerr <<"entity doesn't exist !"<<std::endl;
+                    return;
+                }
+
                 if (current_scene->component_manager.add_component<T>(entity, default_value) == -1)
                 {
                     return;
@@ -83,6 +90,12 @@ class ECS
         template<typename T>
             static T *get_component(Entity entity)
             {
+                if (current_scene->entity_to_mask.find(entity) == current_scene->entity_to_mask.end())
+                {
+                    std::cerr <<"entity doesn't exist !"<<std::endl;
+                    return nullptr;
+                }
+
                 return current_scene->component_manager.get_component<T>(entity);
             }
 
@@ -93,11 +106,11 @@ class ECS
                 return current_scene->system_manager.create_signature<Components...>();
             }       
 
-        static void register_system(System system, ComponentMask mask, void *args);
+        static void register_system(System system, ComponentMask mask, int argc = 0, void *args[] = nullptr);
         static void call_system(System system);
-        
 
-        private:
+
+    private:
         static Scene next_scene;
         static std::vector<Scene> recycled_scenes;
         static std::unordered_map<Scene, SceneInfo> scenes;

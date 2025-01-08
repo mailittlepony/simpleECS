@@ -40,14 +40,18 @@ Entity ECS::create_entity()
 
 void ECS::delete_entity(Entity entity)
 {
-    current_scene->entity_to_mask.erase(entity);
-    current_scene->recycled_entities.push_back(entity);
-
-    for (SystemInfo &sys_info : current_scene->system_manager.systems) {
-        if ((sys_info.component_mask & get_entity_mask(entity)) == sys_info.component_mask) {
+    for (SystemInfo &sys_info : current_scene->system_manager.systems) 
+    {
+        if ((sys_info.component_mask & get_entity_mask(entity)) == sys_info.component_mask) 
+        {
             sys_info.entities.erase(entity);
         }
     }
+
+    current_scene->entity_to_mask[entity].reset();
+    current_scene->recycled_entities.push_back(entity);
+    current_scene->entity_to_mask[entity] = std::move(current_scene->entity_to_mask[current_scene->entity_to_mask.size() - 1]);
+    current_scene->entity_to_mask.erase(current_scene->entity_to_mask.size() - 1);
 }
 
 ComponentMask ECS::get_entity_mask(Entity entity)
@@ -71,9 +75,9 @@ void ECS::update_entity_mask(Entity entity, ComponentMask mask)
     }
 }
 
-void ECS::register_system(System system, ComponentMask mask, void *args)
+void ECS::register_system(System system, ComponentMask mask, int argc, void *args[])
 {
-    current_scene->system_manager.register_system(system, mask, args);
+    current_scene->system_manager.register_system(system, mask, argc, args);
 }
 
 void ECS::call_system(System system)
@@ -118,7 +122,9 @@ void ECS::delete_scene(Scene scene)
         current_scene = nullptr;
     }
 
-    scenes.erase(scene);
+    recycled_scenes.push_back(scene);
+    scenes[scene] = std::move(scenes[scenes.size() - 1]);
+    scenes.erase(scenes.size() - 1);
     /* std::cout << "deleted scene ID: " << scene << std::endl; */
 
     /* std::cout << "Recycled scene IDs: "; */
