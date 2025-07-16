@@ -5,8 +5,8 @@
 
 1. Clone the repo:
 ```bash
-git clone https://github.com/MailiTruong/SimpleECS-cpp-lib.git
-cd SimpleECS
+git clone https://github.com/mailittlepony/simpleECS-cpp-lib.git
+cd simpleECS
 
 ```
 
